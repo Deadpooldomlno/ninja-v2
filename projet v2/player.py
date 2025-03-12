@@ -13,6 +13,8 @@ class Player():
         self.vx = 0 
         self.vy = 0
         
+        self.peut_sauter = False
+        
         self.vitesse_deplacement  = 5
         self.force_saut = -10
         self.gravite = 0.5
@@ -28,7 +30,8 @@ class Player():
         self.vx = 0
         
     def sauter(self):
-        self.vy = self.force_saut
+        if self.peut_sauter:
+            self.vy = self.force_saut
         
     def update(self, plateformes):
         self.vy += self.gravite
@@ -52,11 +55,14 @@ class Player():
         
         self.rect.y += self.vy
         
+        #self.peut_sauter = False
+        
         for plateforme in plateformes:
             if self.rect.colliderect(plateforme):
                 if self.vy > 0: 
                     self.rect.bottom = plateforme.top
                     self.vy = 0 
+                    self.peut_sauter = True
                 elif self.vy < 0: 
                     self.rect.top = plateforme.bottom
                     self.vy = self.gravite
@@ -67,13 +73,4 @@ class Player():
         elif self.rect.bottom > self.game.h:
             self.rect.bottom = self.game.h
             self.vy = 0
-            
-            
-                    
-        
-
-        
-    
-
-        
-        
+            self.peut_sauter = True
