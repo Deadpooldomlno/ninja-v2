@@ -28,7 +28,9 @@ while running :
                 game.player.sauter()
             
     k = pygame.key.get_pressed()
-
+    
+    if k[pygame.K_LEFT] and k[pygame.K_RIGHT]:
+        game.player.arreter()
     if k[pygame.K_LEFT]:
         game.player.deplacer_gauche()
     elif k[pygame.K_RIGHT]:
@@ -42,6 +44,10 @@ while running :
     
     for plateforme in plateformes:
         pygame.draw.rect(screen, (0,0,0), plateforme)
+        
+    print(game.player.peut_sauter)
+    #print(game.player.rect.bottomleft[1], plateformes[0][1])
     
     pygame.display.update()
 pygame.quit()
+
