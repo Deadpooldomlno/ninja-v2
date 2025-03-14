@@ -54,8 +54,10 @@ class Player():
             self.arreter()
         
         self.rect.y += self.vy
+
+        self.peut_sauter = True
         
-        #self.peut_sauter = False
+        self.peut_sauter = False
         
         for plateforme in plateformes:
             if self.rect.colliderect(plateforme):
@@ -65,12 +67,14 @@ class Player():
                     self.peut_sauter = True
                 elif self.vy < 0: 
                     self.rect.top = plateforme.bottom
-                    self.vy = self.gravite
-                    
-        if self.rect.top < 0:
-            self.rect.top = 0
-            self.vy = self.gravite
-        elif self.rect.bottom > self.game.h:
+                    self.vy = self.gravite +2
+        
+        if self.rect.bottom >= self.game.h:
             self.rect.bottom = self.game.h
             self.vy = 0
-            self.peut_sauter = True
+            self.peut_sauter = True               
+        elif self.rect.top < 0:
+            self.rect.top = 0
+            self.vy = self.gravite +2
+        
+
