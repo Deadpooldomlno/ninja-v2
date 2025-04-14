@@ -22,7 +22,7 @@ fps= pygame.time.Clock()
 
 running = True
 while running :
-    fps.tick(60)
+    fps.tick(20)
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -43,7 +43,7 @@ while running :
         game.player.arreter()
     
     screen.fill((255,255,255))
-    screen.blit(game.player.surf, game.player.rect)
+    screen.blit(game.player.current_image, game.player.rect)
     game.player.update(plateformes,ennemies)
     
     screen.blit(game.ennemy.surf, game.ennemy.rect)
