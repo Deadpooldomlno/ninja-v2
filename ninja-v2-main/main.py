@@ -9,7 +9,6 @@ pygame.display.set_caption('ninja')
 game = Game(screen)
 
 fps= pygame.time.Clock()
-
 #main
 def main():
     state = 'menu'
@@ -63,11 +62,13 @@ def play():
         screen.blit(game.player.current_image, game.player.rect)
         game.player.update()
         
-        screen.blit(game.ennemy.surf, game.ennemy.rect)
-        game.ennemy.update(game.plateformes, game.players)
+        screen.blit(game.slime.image, game.slime.rect)
+        game.slime.update(game.plateformes, game.players)
 
         for plateforme in game.plateformes:
             pygame.draw.rect(screen, (0,0,0), plateforme)
+        for spike in game.spikes:
+            spike.draw()
         
         game.bande_grise()
         for button in [game.button_setting,game.button_restart]:
