@@ -11,9 +11,9 @@ game = Game(screen)
 
 button_setting = Button(screen,('assets/buttons/setting1.png','assets/buttons/setting2.png'),(w-30,20))
 button_restart = Button(screen,('assets/buttons/restart1.png','assets/buttons/restart2.png'),(w-66,20))
-button_play = Button(screen,('assets/buttons/play1.png','assets/buttons/play2.png'),(w/2,h/2))
-button_menu = Button(screen,('assets/buttons/menu1.png','assets/buttons/menu2.png'),(w/2,h/2+36))
-button_quit = Button(screen,('assets/buttons/exit1.png','assets/buttons/exit2.png'),(w/2,h/2+72))
+button_play = Button(screen,('assets/buttons/play1.png','assets/buttons/play2.png'),(w/2,h/2),True)
+button_menu = Button(screen,('assets/buttons/menu1.png','assets/buttons/menu2.png'),(w/2,h/2-90),True)
+button_quit = Button(screen,('assets/buttons/exit1.png','assets/buttons/exit2.png'),(w/2,h/2+90),True)
 
 surf = pygame.Surface((game.w,40))
 surf.fill((127,127,127))
@@ -21,8 +21,9 @@ surf_rect=surf.get_rect()
 
 fps= pygame.time.Clock()
 
+#main
 def main():
-    state = 'setting'
+    state = 'menu'
     
     while state != 'quit':
         if state == 'play':
@@ -30,22 +31,15 @@ def main():
         elif state == 'setting':
             state = setting()
         elif state == 'menu':
-            menu()
-        #elif state == 'restart':
-            
-            
-    print(state)
+            state = menu()
+        elif state == 'restart':
+            game.reset()
+            state = 'play'
 
     pygame.quit()
 
+#jeu
 def play():    
-    plateformes = [pygame.Rect(200, 500, 400, 20),pygame.Rect(100, 400, 200, 20),pygame.Rect(520, 325, 200, 20)]
-    
-    ennemies = []
-    ennemies.append(game.ennemy.rect)
-    players=[]
-    players.append(game.player.rect)
-    
     while True :
         fps.tick(60)
         
@@ -58,10 +52,12 @@ def play():
                 if event.key == pygame.K_UP:
                     game.player.sauter()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if button_setting.check_collision(mouse_pos):
-                    return 'setting'
-                if button_restart.check_collision(mouse_pos):
-                    print('restart')
+                if event.button ==1:
+                    if button_setting.check_collision(mouse_pos):
+                        return 'setting'
+                    if button_restart.check_collision(mouse_pos):
+                        game.nb_mort +=1
+                        return 'restart'
                 
         k = pygame.key.get_pressed()
         
@@ -76,12 +72,12 @@ def play():
         
         screen.fill((255,255,255))
         screen.blit(game.player.current_image, game.player.rect)
-        game.player.update(plateformes,ennemies)
+        game.player.update()
         
         screen.blit(game.ennemy.surf, game.ennemy.rect)
-        game.ennemy.update(plateformes, players)
+        game.ennemy.update(game.plateformes, game.players)
 
-        for plateforme in plateformes:
+        for plateforme in game.plateformes:
             pygame.draw.rect(screen, (0,0,0), plateforme)
         
         screen.blit(surf,surf_rect)
@@ -89,7 +85,8 @@ def play():
             button.draw()
         
         pygame.display.update()
-    
+
+#options  
 def setting():
     while True :
         fps.tick(60)
@@ -100,12 +97,13 @@ def setting():
             if event.type == pygame.QUIT:
                 return 'quit'
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if button_quit.check_collision(mouse_pos):
-                    return 'quit'
-                if button_menu.check_collision(mouse_pos):
-                    return 'menu'
-                if button_play.check_collision(mouse_pos):
-                    return 'play'
+                if event.button ==1:
+                    if button_quit.check_collision(mouse_pos):
+                        return 'quit'
+                    if button_menu.check_collision(mouse_pos):
+                        return 'menu'
+                    if button_play.check_collision(mouse_pos):
+                        return 'play'
         
         screen.fill((255,255,255))
         screen.blit(surf,surf_rect)
@@ -113,7 +111,7 @@ def setting():
             button.draw()
         
         pygame.display.update()
-        
+#menu      
 def menu():
     while True :
         fps.tick(60)
@@ -124,10 +122,11 @@ def menu():
             if event.type == pygame.QUIT:
                 return 'quit'
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if button_play.check_collision(mouse_pos):
-                    return 'play'
-                if button_setting.check_collision(mouse_pos):
-                    return 'setting'
+                if event.button ==1:
+                    if button_play.check_collision(mouse_pos):
+                        return 'restart'
+                    if button_setting.check_collision(mouse_pos):
+                        return 'setting'
         
         screen.fill((255,255,255))
         screen.blit(surf,surf_rect)
