@@ -38,7 +38,7 @@ class Player():
         
         self.peut_sauter = False
         
-        self.vitesse_deplacement  = 5
+        self.vitesse_deplacement  = 4
         self.force_saut = -10
         
     def deplacer_gauche(self):
@@ -109,17 +109,24 @@ class Player():
             self.rect.top = 40
             self.vy = self.game.gravite +0.5
         
-        #detection joueur - plateforme
-        for ennemy in self.game.ennemies:
-            if self.rect.colliderect(ennemy):
-                if self.vy > 0 and self.rect.bottom - self.vy <= ennemy.top:
-                    self.rect.bottom = ennemy.top
+        #detection verticale joueur - spikes
+        for spike in self.game.spikes:
+            if self.rect.colliderect(spike.rect):
+                self.game.nb_mort+=1
+                self.game.reset()
+                
+        
+        #detection joueur - ennemies
+        for slime in self.game.slimes:
+            if self.rect.colliderect(slime):
+                if self.vy > 0 and self.rect.bottom - self.vy <= slime.top:
+                    self.rect.bottom = slime.top
                     self.vy = -self.vy
                 else:
                     if self.vx > 0:
-                        self.rect.right = ennemy.left
+                        self.rect.right = slime.left
                     elif self.vx < 0:
-                        self.rect.left = ennemy.right
+                        self.rect.left = slime.right
                     self.vy = 0
                     self.arreter()
                     self.game.nb_mort+=1
