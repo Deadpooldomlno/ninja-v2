@@ -1,6 +1,7 @@
 from button import *
+from spike import Spike
 from player import Player
-from ennemy import Ennemy
+from slime import Slime
 import pygame
 pygame.init()
 
@@ -16,13 +17,17 @@ class Game:
         self.nb_mort =0
         
         self.player = Player(self)
-        self.ennemy = Ennemy(self,50,1)
+        self.slime = Slime(self,(450,300),50)
         self.plateformes = [pygame.Rect(200, 500, 400, 20),pygame.Rect(100, 400, 200, 20),pygame.Rect(520, 325, 200, 20)]
    
-        self.ennemies = []
-        self.ennemies.append(self.ennemy.rect)
+        self.slimes = []
+        self.slimes.append(self.slime.rect)
         self.players=[]
         self.players.append(self.player.rect)
+        
+        self.spike = Spike(screen,(200,388),1)
+        self.spikes=[]
+        self.spikes.append(self.spike)
         
         #boutons
         self.button_setting = Button(screen,('assets/buttons/setting1.png','assets/buttons/setting2.png'),(self.w-30,20))
@@ -46,11 +51,10 @@ class Game:
     #reinitialise certins atributs
     def reset(self):
         self.player = Player(self)
-        self.ennemy = Ennemy(self,50,1)
-        self.plateformes = [pygame.Rect(200, 510, 400, 20),pygame.Rect(100, 410, 200, 20),pygame.Rect(520, 335, 200, 20)]
+        self.slime = Slime(self,(450,300),50)
    
-        self.ennemies = []
-        self.ennemies.append(self.ennemy.rect)
+        self.slimes = []
+        self.slimes.append(self.slime.rect)
         self.players=[]
         self.players.append(self.player.rect)
         
