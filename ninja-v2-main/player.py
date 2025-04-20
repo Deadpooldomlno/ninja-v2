@@ -9,22 +9,22 @@ class Player():
         self.last_direction = 1 #correspond au sens du joeur, droite par defaut
         
         #attributs correspondant aux images du joueur
-        self.img_idleD = [pygame.image.load(f'assets/player/idle{i}D.png') for i in range(1,3)] #liste avec chaque image de idle orientÃ© vers la droite(quand il fait rien)    
+        self.img_idleD = [pygame.image.load(f'assets/player/idle{i}D.png') for i in range(1,3)] #liste avec chaque image de idle orientée vers la droite(quand il fait rien)    
         self.img_idleD = [pygame.transform.scale_by(img, 5) for img in self.img_idleD] #redimensionnement     
         
-        self.img_idleG = [pygame.image.load(f'assets/player/idle{i}G.png') for i in range(1,3)] #meme chose mais orientÃ© vers la gauche
+        self.img_idleG = [pygame.image.load(f'assets/player/idle{i}G.png') for i in range(1,3)] #meme chose mais orientée vers la gauche
         self.img_idleG = [pygame.transform.scale_by(img, 5) for img in self.img_idleG]  
         
-        self.img_runD = [pygame.image.load(f'assets/player/run{i}D.png') for i in range(1,7)] #liste avec chaque image de run orientÃ© vers la droite(quand il court) 
+        self.img_runD = [pygame.image.load(f'assets/player/run{i}D.png') for i in range(1,7)]
         self.img_runD = [pygame.transform.scale_by(img, 5) for img in self.img_runD]
         
-        self.img_runG = [pygame.image.load(f'assets/player/run{i}G.png') for i in range(1,7)] #meme chose mais orientÃ© vers la gauche
+        self.img_runG = [pygame.image.load(f'assets/player/run{i}G.png') for i in range(1,7)]
         self.img_runG = [pygame.transform.scale_by(img, 5) for img in self.img_runG]
         
-        self.img_jumpD = pygame.image.load('assets/player/jumpD.png') #image de jump orientÃ© vers le droite(quand il saute)
+        self.img_jumpD = pygame.image.load('assets/player/jumpD.png')
         self.img_jumpD = pygame.transform.scale_by(self.img_jumpD, 5)
         
-        self.img_jumpG = pygame.image.load('assets/player/jumpG.png') #meme chose mais orientÃ© vers la gauche
+        self.img_jumpG = pygame.image.load('assets/player/jumpG.png')
         self.img_jumpG = pygame.transform.scale_by(self.img_jumpG, 5)
         
         
@@ -32,7 +32,7 @@ class Player():
         self.image_index = 0
         self.animation_speed = 0.07 #vitesse de rotation entre chaque image
         
-        self.rect = self.current_image.get_rect(center= (self.game.w/2,self.game.h-134)) #recupere la surface de l image principale, et indique son centre 
+        self.rect = self.current_image.get_rect(center= (550,250)) #recupere la surface de l image principale, et indique son centre 
         self.vx = 0 
         self.vy = 0
         
@@ -54,7 +54,7 @@ class Player():
         if self.peut_sauter:
             self.vy = self.force_saut
         
-    def update(self,plateformes,ennemies):
+    def update(self):
         self.animation()
         
         self.vy += self.game.gravite
@@ -68,7 +68,7 @@ class Player():
         self.rect.x += self.vx
         
         #detection horizontale joueur - plateforme
-        for plateforme in plateformes:
+        for plateforme in self.game.plateformes:
             if self.rect.colliderect(plateforme):
                 if self.vx > 0:
                     self.rect.right = plateforme.left
@@ -91,7 +91,7 @@ class Player():
         rect_test.y += 1
         
         #detection verticale joueur - plateforme
-        for plateforme in plateformes:
+        for plateforme in self.game.plateformes:
             if self.rect.colliderect(plateforme) or rect_test.colliderect(plateforme):
                 if self.vy > 0: 
                     self.rect.bottom = plateforme.top
@@ -110,7 +110,7 @@ class Player():
             self.vy = self.game.gravite +0.5
         
         #detection joueur - plateforme
-        for ennemy in ennemies:
+        for ennemy in self.game.ennemies:
             if self.rect.colliderect(ennemy):
                 if self.vy > 0 and self.rect.bottom - self.vy <= ennemy.top:
                     self.rect.bottom = ennemy.top
@@ -122,7 +122,8 @@ class Player():
                         self.rect.left = ennemy.right
                     self.vy = 0
                     self.arreter()
-                    # degat ennemie
+                    self.game.nb_mort+=1
+                    self.game.reset()
         
     def animation(self):
         #condition pour changer l image principale du joueur 
@@ -162,3 +163,4 @@ class Player():
                                         
 
         
+
