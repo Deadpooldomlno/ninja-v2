@@ -3,22 +3,26 @@ pygame.init()
 
 class Button:
     
-    def __init__(self,screen,images,pos):
+    def __init__(self,screen,images,pos,scale=None):
         self.screen=screen
+        self.pos = pos
+        
         self.image1=pygame.image.load(images[0])
         self.image2=pygame.image.load(images[1])
-        
-        self.pos = pos
+        if scale:
+            self.image1 = pygame.transform.scale_by(self.image1, 3)
+            self.image2 = pygame.transform.scale_by(self.image2, 3)
         
         self.current_image = self.image1
         self.rect = self.current_image.get_rect(center=pos)
-        self.pressed = False
         
     def draw(self):
-        if self.pressed:
+        mouse_pos = pygame.mouse.get_pos()
+        if self.check_collision(mouse_pos):
             self.current_image = self.image2
         else:
             self.current_image = self.image1
+        
         self.screen.blit(self.current_image,self.rect)
     
     def check_collision(self,mouse_pos):
