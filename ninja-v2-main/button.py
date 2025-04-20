@@ -29,4 +29,19 @@ class Button:
         return self.rect.collidepoint(mouse_pos)
             
                 
+class Texte:
+    
+    def __init__(self,screen,image,pos,scale=None):
+        self.screen=screen
+        self.pos = pos
+        self.image = pygame.image.load(image)
+        if scale:
+            self.image=pygame.transform.scale_by(self.image,2)
         
+        self.rect = self.image.get_rect(center=pos)
+        
+    def draw(self):
+        self.screen.blit(self.image,self.rect)
+        
+        
+    
