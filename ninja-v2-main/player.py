@@ -109,14 +109,14 @@ class Player():
             self.rect.top = 40
             self.vy = self.game.gravite +0.5
         
-        #detection verticale joueur - spikes
+        #detection collisions joueur - spikes
         for spike in self.game.spikes:
             if self.rect.colliderect(spike.rect):
                 self.game.nb_mort+=1
                 self.game.reset()
                 
         
-        #detection joueur - ennemies
+        #detection joueur - slimes
         for slime in self.game.slimes:
             if self.rect.colliderect(slime):
                 if self.vy > 0 and self.rect.bottom - self.vy <= slime.top:
@@ -167,6 +167,9 @@ class Player():
             if self.image_index >= len(image):
                 self.image_index = 0
             self.current_image = image[int(self.image_index)]
+            
+    def draw(self):
+        self.game.screen.blit(self.current_image, self.rect)
                                         
 
         
