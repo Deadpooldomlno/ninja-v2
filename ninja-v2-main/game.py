@@ -17,7 +17,7 @@ class Game:
         self.nb_mort =0
         
         self.player = Player(self)
-        self.slime = Slime(self,(450,300),50)
+        self.slime = Slime(self,(210,460),330)
         self.plateformes = [pygame.Rect(200, 500, 400, 20),pygame.Rect(100, 400, 200, 20),pygame.Rect(520, 325, 200, 20)]
    
         self.slimes = []
@@ -35,23 +35,27 @@ class Game:
         self.button_play = Button(screen,('assets/buttons/play1.png','assets/buttons/play2.png'),(self.w/2,self.h/2),True)
         self.button_menu = Button(screen,('assets/buttons/menu1.png','assets/buttons/menu2.png'),(self.w/2,self.h/2-90),True)
         self.button_quit = Button(screen,('assets/buttons/exit1.png','assets/buttons/exit2.png'),(self.w/2,self.h/2+90),True)
-        
-        #textes
-        self.death = Texte(screen,'assets/death.png',(57,20),True)
-        self.timer = Texte(screen,'assets/timer.png',(355,20),True)
-        self.bestTime = Texte(screen,'assets/bestTime.png',(85,20),True)
 
+    #dessine du texte
+    def draw_text(self,str,pos):
+        font = pygame.font.SysFont('Consolas',25)
+        text = font.render(str,True,(255,255,255))
+        rect =text.get_rect()
+        rect.x =pos[0]
+        rect.y =pos[1]
+        self.screen.blit(text,rect)
+    
     #desine une bande grise
-    def bande_grise(self):
+    def draw_bande_grise(self):
         surf = pygame.Surface((self.w,40))
         surf.fill((127,127,127))
         surf_rect=surf.get_rect()
         self.screen.blit(surf,surf_rect)
     
-    #reinitialise certins atributs
+    #reinitialise le jeu
     def reset(self):
         self.player = Player(self)
-        self.slime = Slime(self,(450,300),50)
+        self.slime = Slime(self,(210,460),330)
    
         self.slimes = []
         self.slimes.append(self.slime.rect)
