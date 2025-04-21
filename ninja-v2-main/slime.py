@@ -6,9 +6,18 @@ class Slime:
     
     def __init__(self,game,pos,range):
         self.game = game
-        self.image = pygame.image.load('assets/slime.png')
-        self.image = pygame.transform.scale_by(self.image,1.5)
-        self.rect = self.image.get_rect(center =pos)
+        
+        self.g = pygame.image.load('assets/slimeG.png')
+        self.g = pygame.transform.scale_by(self.g,1.5)
+        
+        self.d = pygame.image.load('assets/slimeD.png')
+        self.d = pygame.transform.scale_by(self.d,1.5)
+        
+        self.current_image = self.d
+        
+        self.rect = self.current_image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
         
         self.start_x = pos[0]
         self.range = range
@@ -18,14 +27,16 @@ class Slime:
         self.vx = 0 
         self.vy = 0
 
-    def update(self,plateformes,players):
+    def update(self):
+        self.animation()
+        
         self.vy += self.game.gravite
         self.vy = min(self.vy, self.game.vitesse_max_chute)
         
         if self.rect.x > self.start_x + self.range:
-            self.direction = -1  
+            self.direction = -1
 
-        elif self.rect.x < self.start_x - self.range:
+        elif self.rect.x < self.start_x:
             self.direction = 1
 
         self.vx = self.vitesse_deplacement * self.direction
@@ -33,21 +44,21 @@ class Slime:
         self.rect.x += self.vx
         
         #detection horizontale ennemi - plateforme
-        for plateforme in plateformes:
+        for plateforme in self.game.plateformes:
             if self.rect.colliderect(plateforme):
                 if self.vx > 0:
                     self.rect.right = plateforme.left
-                    self.deplacer_gauche()
+                    self.vx = -self.vitesse_deplacement
                 elif self.vx < 0:  
                     self.rect.left = plateforme.right
-                    self.deplacer_droite()
+                    self.vx = self.vitesse_deplacement
         
         if self.rect.left < 0:
             self.rect.left = 0
-            self.deplacer_droite()
+            self.vx = self.vitesse_deplacement
         elif self.rect.right > self.game.w:
             self.rect.right = self.game.w
-            self.deplacer_gauche()
+            self.vx = -self.vitesse_deplacement
         
         self.rect.y += self.vy
         
@@ -55,7 +66,7 @@ class Slime:
         rect_test.y += 1
         
         #detection verticale ennemi - plateforme
-        for plateforme in plateformes:
+        for plateforme in self.game.plateformes:
             if self.rect.colliderect(plateforme) or rect_test.colliderect(plateforme):
                 if self.vy > 0: 
                     self.rect.bottom = plateforme.top
@@ -70,3 +81,12 @@ class Slime:
         elif self.rect.top < 0:
             self.rect.top = 0
             self.vy = self.game.gravite +2
+            
+    def animation(self):
+        if self.direction >0:
+            self.current_image = self.d
+        else:
+            self.current_image = self.g
+            
+    def draw(self):
+        self.game.screen.blit(self.current_image, self.rect)
