@@ -5,24 +5,36 @@ pygame.init()
 w,h=1000,600
 screen = pygame.display.set_mode((w, h))
 pygame.display.set_caption('ninja')
+pygame.display.set_icon(pygame.image.load('assets/icon2.png'))
 
 game = Game(screen)
 
 fps= pygame.time.Clock()
+
 #main
 def main():
-    state = 'menu'
+    state = 'menu' 
+    pass_state ='menu'
     
     while state != 'quit':
         if state == 'play':
             state = play()
+            pass_state ='play'
+        
         elif state == 'setting':
-            state = setting()
+            state = setting(pass_state)
+            pass_state ='setting'
+        
         elif state == 'menu':
             state = menu()
+            pass_state ='menu'
+            
         elif state == 'restart':
+            if pass_state == 'menu':
+                game.nb_mort = 0
             game.reset()
             state = 'play'
+            pass_state ='restart'
 
     pygame.quit()
 
@@ -59,27 +71,29 @@ def play():
             game.player.arreter()
         
         screen.fill((255,255,255))
-        screen.blit(game.player.current_image, game.player.rect)
+        
+        game.player.draw()
         game.player.update()
         
-        screen.blit(game.slime.image, game.slime.rect)
-        game.slime.update(game.plateformes, game.players)
+        game.slime.draw()
+        game.slime.update()
 
         for plateforme in game.plateformes:
             pygame.draw.rect(screen, (0,0,0), plateforme)
         for spike in game.spikes:
             spike.draw()
         
-        game.bande_grise()
+        game.draw_bande_grise()
         for button in [game.button_setting,game.button_restart]:
             button.draw()
-        game.timer.draw()
-        game.death.draw()
+        
+        game.draw_text('death: '+str(game.nb_mort),(270,9))
+        game.draw_text('timer: 00:00:00',(15,9))
         
         pygame.display.update()
 
 #options  
-def setting():
+def setting(pass_state):
     while True :
         fps.tick(60)
         
@@ -98,12 +112,16 @@ def setting():
                         return 'play'
         
         screen.fill((255,255,255))
-        game.bande_grise()
+        game.draw_bande_grise()
         for button in [game.button_play,game.button_menu,game.button_quit]:
             button.draw()
         
-        game.bestTime.draw()
-        
+        if pass_state == 'play':
+            game.draw_text('timer: 00:00:00',(15,9))
+        else:
+            game.draw_text('best time: 00:00:00',(15,9))
+            
+
         pygame.display.update()
 #menu      
 def menu():
@@ -123,11 +141,11 @@ def menu():
                         return 'setting'
         
         screen.fill((255,255,255))
-        game.bande_grise()
+        game.draw_bande_grise()
         for button in [game.button_play,game.button_setting]:
             button.draw()
-   
-        game.bestTime.draw()
+        
+        game.draw_text('best time: 00:00:00',(15,9))
         
         pygame.display.update()
 
